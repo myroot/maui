@@ -35,6 +35,9 @@ override Microsoft.Maui.Controls.TemplatedView.MeasureOverride(double widthConst
 *REMOVED*override Microsoft.Maui.Controls.RadioButton.ArrangeOverride(Microsoft.Maui.Graphics.Rect bounds) -> Microsoft.Maui.Graphics.Size
 *REMOVED*override Microsoft.Maui.Controls.RadioButton.MeasureOverride(double widthConstraint, double heightConstraint) -> Microsoft.Maui.Graphics.Size
 *REMOVED*override Microsoft.Maui.Controls.FlexLayout.MeasureOverride(double widthConstraint, double heightConstraint) -> Microsoft.Maui.Graphics.Size
+static Microsoft.Maui.Controls.ToolTipProperties.GetText(Microsoft.Maui.Controls.BindableObject! bindable) -> object!
+static Microsoft.Maui.Controls.ToolTipProperties.SetText(Microsoft.Maui.Controls.BindableObject! bindable, object! value) -> void
+static readonly Microsoft.Maui.Controls.ToolTipProperties.TextProperty -> Microsoft.Maui.Controls.BindableProperty!
 static readonly Microsoft.Maui.Controls.VisualElement.ZIndexProperty -> Microsoft.Maui.Controls.BindableProperty!
 ~Microsoft.Maui.Controls.Handlers.Compatibility.CellWrapperTemplate.CellWrapperTemplate(Microsoft.Maui.Controls.DataTemplate source, Microsoft.Maui.Controls.BindableObject container = null) -> void
 ~Microsoft.Maui.Controls.Handlers.Compatibility.CellWrapperTemplateSelector.CellWrapperTemplateSelector(Microsoft.Maui.Controls.DataTemplateSelector selector) -> void
