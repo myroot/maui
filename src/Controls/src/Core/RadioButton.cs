@@ -460,18 +460,29 @@ namespace Microsoft.Maui.Controls
 
 		static View BuildDefaultTemplate()
 		{
-			var frame = new Frame
+			var border = new Border
 			{
-				HasShadow = false,
 				Padding = 6
 			};
 
-			BindToTemplatedParent(frame, BackgroundColorProperty, Microsoft.Maui.Controls.Frame.BorderColorProperty, HorizontalOptionsProperty,
+			BindToTemplatedParent(border, BackgroundColorProperty, HorizontalOptionsProperty, VerticalOptionsProperty,
 				MarginProperty, OpacityProperty, RotationProperty, ScaleProperty, ScaleXProperty, ScaleYProperty,
-				TranslationYProperty, TranslationXProperty, VerticalOptionsProperty);
+				TranslationYProperty, TranslationXProperty);
+
+			border.SetBinding(Border.StrokeProperty, new Binding(BorderColorProperty.PropertyName,
+				converter: new BorderColorToBrush(),
+				source: RelativeBindingSource.TemplatedParent));
+
+			border.SetBinding(Border.StrokeShapeProperty, new Binding(CornerRadiusProperty.PropertyName,
+				converter: new CornerRadiusToShape(),
+				source: RelativeBindingSource.TemplatedParent));
+
+			border.SetBinding(Border.StrokeThicknessProperty, new Binding(BorderWidthProperty.PropertyName,
+				source: RelativeBindingSource.TemplatedParent));
 
 			var grid = new Grid
 			{
+				ColumnSpacing = 6,
 				RowSpacing = 0,
 				ColumnDefinitions = new ColumnDefinitionCollection {
 					new ColumnDefinition { Width = GridLength.Auto },
@@ -510,10 +521,9 @@ namespace Microsoft.Maui.Controls
 			var contentPresenter = new ContentPresenter
 			{
 				HorizontalOptions = LayoutOptions.Fill,
-				VerticalOptions = LayoutOptions.Fill
+				VerticalOptions = LayoutOptions.Center
 			};
 
-			contentPresenter.SetBinding(MarginProperty, new Binding("Padding", source: RelativeBindingSource.TemplatedParent));
 			contentPresenter.SetBinding(BackgroundColorProperty, new Binding(BackgroundColorProperty.PropertyName,
 				source: RelativeBindingSource.TemplatedParent));
 
@@ -521,11 +531,11 @@ namespace Microsoft.Maui.Controls
 			grid.Add(checkMark);
 			grid.Add(contentPresenter, 1, 0);
 
-			frame.Content = grid;
+			border.Content = grid;
 
 			INameScope nameScope = new NameScope();
-			NameScope.SetNameScope(frame, nameScope);
-			nameScope.RegisterName(TemplateRootName, frame);
+			NameScope.SetNameScope(border, nameScope);
+			nameScope.RegisterName(TemplateRootName, border);
 			nameScope.RegisterName(UncheckedButton, normalEllipse);
 			nameScope.RegisterName(CheckedIndicator, checkMark);
 			nameScope.RegisterName("ContentPresenter", contentPresenter);
@@ -552,12 +562,12 @@ namespace Microsoft.Maui.Controls
 
 			visualStateGroups.Add(checkedStates);
 
-			VisualStateManager.SetVisualStateGroups(frame, visualStateGroups);
+			VisualStateManager.SetVisualStateGroups(border, visualStateGroups);
 
-			return frame;
+			return border;
 		}
 
-		/// <include file="../../docs/Microsoft.Maui.Controls/RadioButton.xml" path="//Member[@MemberName='ContentAsString']/Docs/*" />
+		/// <include file="../../docs/Microsoft.Maui.Controls/RadioButton.xml" path="//Member[@MemberName='ContentAsString']/Docs" />
 		public string ContentAsString()
 		{
 			var content = Content;
@@ -567,6 +577,35 @@ namespace Microsoft.Maui.Controls
 			}
 
 			return content?.ToString();
+		}
+
+		class BorderColorToBrush : IValueConverter
+		{
+			public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+			{
+				return new SolidColorBrush((Graphics.Color)value);
+			}
+
+			public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		class CornerRadiusToShape : IValueConverter
+		{
+			public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+			{
+				return new RoundRectangle
+				{
+					CornerRadius = (int)value,
+				};
+			}
+
+			public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+			{
+				throw new NotImplementedException();
+			}
 		}
 	}
 }
